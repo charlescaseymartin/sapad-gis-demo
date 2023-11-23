@@ -3,27 +3,32 @@
 import { useState } from "react";
 
 type ItemOption = {
-  id: number;
+  id: string;
   name: string;
+}
+
+type SelectInputType = {
+  selectedOption: any;
+  options: any[];
+  onSelectItem: (id: string) => void;
 }
 
 type SelectMenuType = {
   isOpen: boolean;
-  optionList: ItemOption[];
-  onItemSelection: (id: number) => void;
+  optionList: any[];
+  onItemSelection: (id: string) => void;
 }
 
 type SelectItemType = {
-  item: ItemOption;
-  selectItem: (id: number) => void;
+  item: any;
+  selectItem: (id: string) => void;
 }
 
 function SelectItem({ item, selectItem }: SelectItemType) {
   return (
     <li onClick={() => selectItem(item.id)} className="text-gray-900 relative cursor-default select-none py-2 pl-3 pr-9 hover:bg-indigo-600 hover:text-white" role="option">
       <div className="flex items-center">
-        <img src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" className="h-5 w-5 flex-shrink-0 rounded-full" />
-        <span className="font-normal ml-3 block truncate">{item.name}</span>
+        <span className="font-normal ml-3 block truncate">{item.properties.name}</span>
       </div>
     </li>
   )
@@ -31,30 +36,22 @@ function SelectItem({ item, selectItem }: SelectItemType) {
 
 function SelectMenu({ isOpen, optionList, onItemSelection }: SelectMenuType) {
   return isOpen && (
-    <ul className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm" tabIndex={-1} role="listbox" aria-labelledby="listbox-label" aria-activedescendant="listbox-option-3">
-      {optionList.map((options) => <SelectItem item={options} selectItem={onItemSelection} />)}
+    <ul className="absolute z-20 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm" tabIndex={-1} role="listbox" aria-labelledby="listbox-label" aria-activedescendant="listbox-option-3">
+      {optionList.map((option) => <SelectItem key={`${option.id}`} item={option} selectItem={onItemSelection} />)}
     </ul>
   )
 }
 
-export default function SelectInput() {
-  const options: ItemOption[] = [
-    { id: 1, name: "Tom Cook" },
-    { id: 2, name: "Wade Cooper" },
-    { id: 3, name: "Bruce Wayne" }
-  ];
-  
+export default function SelectInput({ selectedOption, options, onSelectItem }: SelectInputType) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<ItemOption>(options[0]);
 
   const toggleDropdownMenu = () => {
     return isMenuOpen ? setIsMenuOpen(false) : setIsMenuOpen(true);
   }
 
-  const onSelectItem = (id: number) => {
-    if(selectedOption.id === id) return;
-    const newOption = options.find((option => option.id === id))
-    if(newOption) setSelectedOption(newOption);
+  const onItemSelection = (id: string) => {
+    onSelectItem(id);
+    toggleDropdownMenu();
   }
 
   return (
@@ -63,7 +60,7 @@ export default function SelectInput() {
       <div className="relative mt-2">
         <button type="button" onClick={toggleDropdownMenu} className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label">
           <span className="flex items-center">
-            <span className="ml-3 block truncate">{selectedOption.name}</span>
+            <span className="ml-3 block truncate">{selectedOption.properties.name}</span>
           </span>
           <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
             <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -71,7 +68,7 @@ export default function SelectInput() {
             </svg>
           </span>
         </button>
-        <SelectMenu isOpen={isMenuOpen} optionList={options} onItemSelection={onSelectItem} />
+        <SelectMenu isOpen={isMenuOpen} optionList={options} onItemSelection={onItemSelection} />
       </div>
     </div>
 

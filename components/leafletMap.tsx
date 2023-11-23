@@ -1,32 +1,41 @@
 "use client"
 
+import 'leaflet/dist/leaflet.css';
 import { useState } from "react";
-import { LatLngExpression } from "leaflet";
+import { LatLngExpression, geoJSON } from "leaflet";
 import { MapContainer } from "react-leaflet/MapContainer";
 import { TileLayer } from "react-leaflet/TileLayer";
-import { Marker } from "react-leaflet/Marker";
-import { Popup } from "react-leaflet/Popup";
-// import { LayersControl } from "react-leaflet/LayersControl";
+import { LayersControl } from "react-leaflet/LayersControl";
+import { GeoJSON, GeoJSONProps } from "react-leaflet/GeoJSON";
+import { useMap } from "react-leaflet";
 
-import "leaflet/dist/leaflet.css";
+type LeafletMapType = {
+  feature: any;
+}
 
+function SapadDataDisplay({ feature }: LeafletMapType) {
+  const map = useMap();
+  const geoObjectFeature = geoJSON(feature);
+  map.fitBounds(geoObjectFeature.getBounds());
 
-export default function LeafletMap() {
-  const [position, setPosition] = useState<LatLngExpression>([51.505, -0.09])
+  return <GeoJSON key={`${feature.id}-${feature.properties.name}`} data={feature} />
+}
+
+export default function LeafletMap({ feature }: LeafletMapType) {
   const zoom = 14;
   const scrollWheelZoom = false;
 
   return (
-    <MapContainer center={position} zoom={13} scrollWheelZoom={false} style={{height: '400px'}}>
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      {/* <Marker position={position}>
-        <Popup>
-          A pretty CSS3 popup. <br /> Easily customizable.
-        </Popup>
-      </Marker> */}
-    </MapContainer>
+    <div className="w-1/2 mt-10">
+      {feature && (
+        <MapContainer center={[30.5595, 22.9375]} zoom={zoom} scrollWheelZoom={scrollWheelZoom} style={{ width: "100%", height: "600px", zIndex: "10" }}>
+          <SapadDataDisplay feature={feature} />
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+        </MapContainer>
+      )}
+    </div>
   )
 }
