@@ -26,7 +26,7 @@ type SelectItemType = {
 
 function SelectItem({ item, selectItem }: SelectItemType) {
   return (
-    <li onClick={() => selectItem(item.id)} className="text-gray-900 relative cursor-default select-none py-2 pl-3 pr-9 hover:bg-indigo-600 hover:text-white" role="option">
+    <li onClick={() => selectItem(item.id)} className="text-gray-900 relative cursor-default select-none py-2 pl-3 pr-9 hover:bg-indigo-600 hover:text-white" role="option" aria-selected>
       <div className="flex items-center">
         <span className="font-normal ml-3 block truncate">{item.properties.name}</span>
       </div>

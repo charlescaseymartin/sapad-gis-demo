@@ -7,8 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "clean-prod": "rm -rf .next; rm -rf out; rm -rf node_modules",
-    "prod-build": "yarn clean-prod; yarn; yarn build"
+    "clean:prod": "rm -rf .next; rm -rf out; rm -rf node_modules",
+    "prod:build": "yarn clean:prod; yarn; yarn build"
   },
   "dependencies": {
     "leaflet": "^1.9.4",
